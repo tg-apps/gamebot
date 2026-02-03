@@ -36,7 +36,7 @@ sqlite.run(`
 `);
 
 sqlite.run(`
-  CREATE TABLE IF NOT EXISTS "tomatoes" (
+  CREATE TABLE IF NOT EXISTS "tomato_farm" (
     "user_id" INTEGER PRIMARY KEY REFERENCES "users"("user_id") ON DELETE CASCADE,
     "level" INTEGER NOT NULL DEFAULT 0,
     "last_collect" INTEGER NOT NULL DEFAULT 0
