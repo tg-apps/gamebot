@@ -17,27 +17,27 @@ function calculateBusinessIncome(businessLevel: number): number {
   return 1.1 ** businessLevel * 10_000;
 }
 
-async function getBusinessProfit(
+function getBusinessProfit(
   userId: number,
   businessInfo: { level: number; lastCollect: number },
-): Promise<number> {
+): number {
   if (businessInfo.level === 0) return 0;
   if (businessInfo.lastCollect === 0) {
-    await updateBusinessInfo(userId, { lastCollect: Date.now() / 1000 });
+    updateBusinessInfo(userId, { lastCollect: Date.now() / 1000 });
     return 0;
   }
   const timePassed = calculateTimePassed(businessInfo.lastCollect);
   return timePassed * calculateBusinessIncome(businessInfo.level);
 }
 
-async function collectBusinessProfit(
+function collectBusinessProfit(
   userId: number,
   businessInfo: { level: number; lastCollect: number },
   userBalance: number,
-): Promise<number> {
-  const profit = await getBusinessProfit(userId, businessInfo);
-  await updateBusinessInfo(userId, { lastCollect: Date.now() / 1000 });
-  await updateUserBalance(userId, { balance: userBalance + profit });
+): number {
+  const profit = getBusinessProfit(userId, businessInfo);
+  updateBusinessInfo(userId, { lastCollect: Date.now() / 1000 });
+  updateUserBalance(userId, { balance: userBalance + profit });
   return profit;
 }
 
@@ -64,8 +64,8 @@ async function upgradeBusinessLevel(
     return { success: false, message: "ваш бизнес максимального уровня" };
   }
 
-  await updateUserBalance(userId, { balance: userBalance - upgradeCost });
-  await updateBusinessInfo(userId, { level: businessInfo.level + 1 });
+  updateUserBalance(userId, { balance: userBalance - upgradeCost });
+  updateBusinessInfo(userId, { level: businessInfo.level + 1 });
 
   return { success: true, message: "вы улучшили ваш бизнес" };
 }
@@ -75,10 +75,10 @@ export async function handleBusiness(
   action?: "collect" | "upgrade",
 ) {
   const userId = ctx.from.id;
-  const userInfo = await getUserInfo(userId);
+  const userInfo = getUserInfo(userId);
   if (!userInfo) return;
 
-  const businessInfo = await getBusinessInfo(userId);
+  const businessInfo = getBusinessInfo(userId);
   if (!businessInfo) return;
 
   const userlink = getUserlink(userId, userInfo.nickname);
@@ -101,11 +101,11 @@ ${userlink}, информация о вашем бизнесе:
     return await ctx.reply(message, { parse_mode: "MarkdownV2" });
   }
 
-  const userBalance = await getUserBalance(userId);
+  const userBalance = getUserBalance(userId);
   if (!userBalance) return;
 
   if (action === "collect") {
-    const profit = await collectBusinessProfit(
+    const profit = collectBusinessProfit(
       userId,
       businessInfo,
       userBalance.balance,

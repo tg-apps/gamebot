@@ -3,75 +3,82 @@ import type { User } from "grammy/types";
 import { db, schema } from "#db";
 import { eq } from "drizzle-orm";
 
-export async function getUserBalance(userId: number) {
-  const data = await db
+export function getUserBalance(userId: number) {
+  const data = db
     .select()
     .from(schema.balance)
-    .where(eq(schema.balance.userId, userId));
-  return data[0] ?? null;
+    .where(eq(schema.balance.userId, userId))
+    .get();
+  return data;
 }
 
-export async function updateUserBalance(
+export function updateUserBalance(
   userId: number,
   userBalance: { balance?: number; tomatoes?: number },
 ) {
-  const data = await db
+  const data = db
     .update(schema.balance)
     .set(userBalance)
     .where(eq(schema.balance.userId, userId))
-    .returning();
-  return data[0] ?? null;
+    .returning()
+    .get();
+  return data;
 }
 
-export async function getBusinessInfo(userId: number) {
-  const data = await db
+export function getBusinessInfo(userId: number) {
+  const data = db
     .select()
     .from(schema.businesses)
-    .where(eq(schema.businesses.userId, userId));
-  return data[0] ?? null;
+    .where(eq(schema.businesses.userId, userId))
+    .get();
+  return data;
 }
 
-export async function updateBusinessInfo(
+export function updateBusinessInfo(
   userId: number,
   businessInfo: { lastCollect?: number; level?: number },
 ) {
-  const data = await db
+  const data = db
     .update(schema.businesses)
     .set(businessInfo)
     .where(eq(schema.businesses.userId, userId))
-    .returning();
-  return data[0] ?? null;
+    .returning()
+    .get();
+  return data;
 }
 
-export async function getTomatoFarmInfo(userId: number) {
-  const data = await db
+export function getTomatoFarmInfo(userId: number) {
+  const data = db
     .select()
     .from(schema.tomatoFarm)
-    .where(eq(schema.tomatoFarm.userId, userId));
-  return data[0] ?? null;
+    .where(eq(schema.tomatoFarm.userId, userId))
+    .get();
+  return data;
 }
 
-export async function updateTomatoFarmInfo(
+export function updateTomatoFarmInfo(
   userId: number,
   farmInfo: { lastCollect?: number; level?: number },
 ) {
-  const data = await db
+  const data = db
     .update(schema.tomatoFarm)
     .set(farmInfo)
     .where(eq(schema.tomatoFarm.userId, userId))
-    .returning();
-  return data[0] ?? null;
+    .returning()
+    .get();
+  return data;
 }
 
-export async function getUserInfo(userId: number) {
-  const data = await db
+export function getUserInfo(userId: number) {
+  const data = db
     .select()
     .from(schema.users)
-    .where(eq(schema.users.userId, userId));
-  return data[0] ?? null;
+    .where(eq(schema.users.userId, userId))
+    .get();
+  return data;
 }
 
-export async function updateUserInfo(
+export function updateUserInfo(
   userId: number,
   userInfo: {
     firstName?: string;
@@ -80,16 +87,17 @@ export async function updateUserInfo(
     nickname?: string;
   },
 ) {
-  const data = await db
+  const data = db
     .update(schema.users)
     .set(userInfo)
     .where(eq(schema.users.userId, userId))
-    .returning();
-  return data[0] ?? null;
+    .returning()
+    .get();
+  return data;
 }
 
 export async function createNewUser(user: User) {
-  const existingUser = await getUserInfo(user.id);
+  const existingUser = getUserInfo(user.id);
 
   if (existingUser) {
     return existingUser;

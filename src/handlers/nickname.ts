@@ -7,7 +7,7 @@ export async function handleNickname(
   ctx: Context & { from: User },
   newNickname?: string,
 ) {
-  const userInfo = await getUserInfo(ctx.from.id);
+  const userInfo = getUserInfo(ctx.from.id);
   if (!userInfo) return;
 
   if (!newNickname) {

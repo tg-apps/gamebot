@@ -4,9 +4,9 @@ import type { User } from "grammy/types";
 import { getUserBalance, getUserInfo } from "./database-manager";
 
 export async function handleBalance(ctx: Context & { from: User }) {
-  const data = await getUserInfo(ctx.from.id);
+  const data = getUserInfo(ctx.from.id);
   if (!data) return;
-  const balance = await getUserBalance(ctx.from.id);
+  const balance = getUserBalance(ctx.from.id);
   if (!balance) return;
 
   const message = `

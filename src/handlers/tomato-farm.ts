@@ -23,7 +23,7 @@ async function getFarmProfit(
 ): Promise<number> {
   if (farmInfo.level === 0) return 0;
   if (farmInfo.lastCollect === 0) {
-    await updateTomatoFarmInfo(userId, { lastCollect: Date.now() / 1000 });
+    updateTomatoFarmInfo(userId, { lastCollect: Date.now() / 1000 });
     return 0;
   }
   const timePassed = calculateTimePassed(farmInfo.lastCollect);
@@ -36,8 +36,8 @@ async function collectFarmProfit(
   tomatoes: number,
 ): Promise<number> {
   const profit = await getFarmProfit(userId, farmInfo);
-  await updateTomatoFarmInfo(userId, { lastCollect: Date.now() / 1000 });
-  await updateUserBalance(userId, { tomatoes: tomatoes + profit });
+  updateTomatoFarmInfo(userId, { lastCollect: Date.now() / 1000 });
+  updateUserBalance(userId, { tomatoes: tomatoes + profit });
   return profit;
 }
 
@@ -64,8 +64,8 @@ async function upgradeFarmLevel(
     return { success: false, message: "ваша ферма максимального уровня" };
   }
 
-  await updateUserBalance(userId, { balance: userBalance - upgradeCost });
-  await updateTomatoFarmInfo(userId, { level: farmInfo.level + 1 });
+  updateUserBalance(userId, { balance: userBalance - upgradeCost });
+  updateTomatoFarmInfo(userId, { level: farmInfo.level + 1 });
 
   return { success: true, message: "вы улучшили вашу ферму" };
 }
@@ -75,10 +75,10 @@ export async function handleTomatoFarm(
   action?: "collect" | "upgrade",
 ) {
   const userId = ctx.from.id;
-  const userInfo = await getUserInfo(userId);
+  const userInfo = getUserInfo(userId);
   if (!userInfo) return;
 
-  const farmInfo = await getTomatoFarmInfo(userId);
+  const farmInfo = getTomatoFarmInfo(userId);
   if (!farmInfo) return;
 
   const userlink = getUserlink(userId, userInfo.nickname);
@@ -101,7 +101,7 @@ ${userlink}, информация о вашей ферме:
     return await ctx.reply(message, { parse_mode: "MarkdownV2" });
   }
 
-  const userBalance = await getUserBalance(userId);
+  const userBalance = getUserBalance(userId);
   if (!userBalance) return;
 
   if (action === "collect") {

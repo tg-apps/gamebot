@@ -11,13 +11,13 @@ import {
 } from "./database-manager";
 
 export async function handleProfile(ctx: Context & { from: User }) {
-  const userInfo = await getUserInfo(ctx.from.id);
+  const userInfo = getUserInfo(ctx.from.id);
   if (!userInfo) return;
-  const balance = await getUserBalance(ctx.from.id);
+  const balance = getUserBalance(ctx.from.id);
   if (!balance) return;
-  const business = await getBusinessInfo(ctx.from.id);
+  const business = getBusinessInfo(ctx.from.id);
   if (!business) return;
-  const farm = await getTomatoFarmInfo(ctx.from.id);
+  const farm = getTomatoFarmInfo(ctx.from.id);
   if (!farm) return;
 
   const userlink = getUserlink(ctx.from.id, userInfo.nickname);
