@@ -20,10 +20,11 @@ export async function handleTomatoes(ctx: Context & { from: User }) {
 
   const userlink = getUserlink(userId, userInfo.nickname);
 
-  return await ctx.reply(
-    `${userlink}, у вас ${userBalance.tomatoes}кг помидоров 🍅`,
-    { parse_mode: "MarkdownV2" },
-  );
+  const tomatoes = escapeMarkdown(formatNumber(userBalance.tomatoes));
+
+  return await ctx.reply(`${userlink}, у вас ${tomatoes}кг помидоров 🍅`, {
+    parse_mode: "MarkdownV2",
+  });
 }
 
 function sellTomatoes(userId: number): { earnings: number; tomatoes: number } {

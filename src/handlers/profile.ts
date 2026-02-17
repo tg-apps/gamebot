@@ -25,10 +25,11 @@ export async function handleProfile(ctx: Context & { from: User }) {
   const userlink = getUserlink(ctx.from.id, userInfo.nickname);
 
   const money = escapeMarkdown(formatNumber(balance.balance));
+  const tomatoes = escapeMarkdown(formatNumber(balance.tomatoes));
 
   const message = `${userlink}, ваш профиль:
 💰 Денег: ${money}₽
-🥫 Помидоры: ${balance.tomatoes}кг
+🥫 Помидоры: ${tomatoes}кг
 💼 Бизнес: ${business.level} рабочих
 🏭 Ферма: ${farm.level} грядок
 `;

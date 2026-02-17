@@ -13,11 +13,12 @@ export async function handleBalance(ctx: Context & { from: User }) {
   if (!balance) return;
 
   const money = escapeMarkdown(formatNumber(balance.balance));
+  const tomatoes = escapeMarkdown(formatNumber(balance.tomatoes));
 
   const message = `
 👫 Ник: [${data.nickname}]
 💰 Деньги: ${money}₽
-🥫 Помидоров: ${balance.tomatoes}кг
+🥫 Помидоров: ${tomatoes}кг
 `;
 
   return await ctx.reply(message, { parse_mode: "MarkdownV2" });
