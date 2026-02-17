@@ -1,5 +1,6 @@
-import { getUserlink } from "#lib/get-userlink";
 import { describe, expect, it } from "bun:test";
+
+import { getUserlink } from "#lib/get-userlink";
 
 describe("getUserlink", () => {
   it("correctly handles a simple case", () => {

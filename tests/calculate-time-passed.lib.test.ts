@@ -1,5 +1,6 @@
-import { calculateTimePassed } from "#lib/calculate-time-passed";
 import { describe, expect, it, setSystemTime } from "bun:test";
+
+import { calculateTimePassed } from "#lib/calculate-time-passed";
 
 describe("calculateTimePassed", () => {
   it("returns seconds passed when under maxTime", () => {

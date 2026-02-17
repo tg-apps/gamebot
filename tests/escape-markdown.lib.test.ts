@@ -1,5 +1,6 @@
-import { escapeMarkdown } from "#lib/escape-markdown";
 import { describe, expect, it } from "bun:test";
+
+import { escapeMarkdown } from "#lib/escape-markdown";
 
 describe("getUserlink", () => {
   it("correctly handles a simple case", () => {

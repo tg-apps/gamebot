@@ -1,7 +1,7 @@
+import { eq } from "drizzle-orm";
 import type { User } from "grammy/types";
 
 import { db, schema } from "#db";
-import { eq } from "drizzle-orm";
 
 export function getUserBalance(userId: number) {
   const data = db
