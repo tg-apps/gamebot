@@ -66,7 +66,7 @@ m.hears(/^(?:ник|никнейм|\/nick|\/nickname)\s+(.+)$/i, (ctx) =>
   handleNickname(ctx, ctx.match[1]),
 );
 
-bot.api.setMyCommands([
+void bot.api.setMyCommands([
   { command: "help", description: "Помощь" },
   { command: "profile", description: "Профиль" },
   { command: "balance", description: "Баланс" },

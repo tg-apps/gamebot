@@ -2,6 +2,8 @@ import type { Context } from "grammy";
 import type { User } from "grammy/types";
 
 import { calculateTimePassed } from "#lib/calculate-time-passed";
+import { escapeMarkdown } from "#lib/escape-markdown";
+import { formatNumber } from "#lib/format-number";
 import { getUserlink } from "#lib/get-userlink";
 
 import {
@@ -17,25 +19,25 @@ function calculateFarmIncome(farmLevel: number): number {
   return 1.2 ** farmLevel * 10;
 }
 
-async function getFarmProfit(
+function getFarmProfit(
   userId: number,
   farmInfo: { level: number; lastCollect: number },
-): Promise<number> {
+): number {
   if (farmInfo.level === 0) return 0;
   if (farmInfo.lastCollect === 0) {
     updateTomatoFarmInfo(userId, { lastCollect: Date.now() / 1000 });
     return 0;
   }
   const timePassed = calculateTimePassed(farmInfo.lastCollect);
-  return timePassed * calculateFarmIncome(userId);
+  return timePassed * calculateFarmIncome(farmInfo.level);
 }
 
-async function collectFarmProfit(
+function collectFarmProfit(
   userId: number,
   farmInfo: { level: number; lastCollect: number },
   tomatoes: number,
-): Promise<number> {
-  const profit = await getFarmProfit(userId, farmInfo);
+): number {
+  const profit = getFarmProfit(userId, farmInfo);
   updateTomatoFarmInfo(userId, { lastCollect: Date.now() / 1000 });
   updateUserBalance(userId, { tomatoes: tomatoes + profit });
   return profit;
@@ -50,7 +52,7 @@ async function upgradeFarmLevel(
   farmInfo: { level: number; lastCollect: number },
   userBalance: number,
 ) {
-  const upgradeCost = calculateUpgradeFarmLevelCost(userId);
+  const upgradeCost = calculateUpgradeFarmLevelCost(farmInfo.level);
   if (userBalance < upgradeCost) {
     return {
       success: false,
@@ -88,13 +90,19 @@ export async function handleTomatoFarm(
       return await ctx.reply("У вас нет фермы");
     }
 
-    const farmProfit = await getFarmProfit(userId, farmInfo);
+    const farmIncome = escapeMarkdown(
+      formatNumber(calculateFarmIncome(farmInfo.level)),
+    );
+
+    const farmProfit = escapeMarkdown(
+      formatNumber(getFarmProfit(userId, farmInfo)),
+    );
 
     const message = `
 ${userlink}, информация о вашей ферме:
 
 🪴 Грядок: ${farmInfo.level}/500
-💵 Доход: ${calculateFarmIncome(farmInfo.level)}кг/сек
+💵 Доход: ${farmIncome}кг/сек
 💰 Прибыль: ${farmProfit}кг
 `;
 
@@ -105,9 +113,12 @@ ${userlink}, информация о вашей ферме:
   if (!userBalance) return;
 
   if (action === "collect") {
-    const profit = collectFarmProfit(userId, farmInfo, userBalance.tomatoes);
+    const profit = escapeMarkdown(
+      formatNumber(collectFarmProfit(userId, farmInfo, userBalance.tomatoes)),
+    );
     return await ctx.reply(
       `${userlink}, вы успешно собрали ${profit}кг помидоров с баланса вашей фермы`,
+      { parse_mode: "MarkdownV2" },
     );
   }
 

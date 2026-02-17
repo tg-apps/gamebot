@@ -91,7 +91,7 @@ export async function handleBusiness(
     }
 
     const businessIncome = escapeMarkdown(
-      calculateBusinessIncome(businessInfo.level),
+      formatNumber(calculateBusinessIncome(businessInfo.level)),
     );
 
     const businessProfit = escapeMarkdown(

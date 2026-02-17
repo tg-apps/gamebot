@@ -1,6 +1,8 @@
 import type { Context } from "grammy";
 import type { User } from "grammy/types";
 
+import { escapeMarkdown } from "#lib/escape-markdown";
+import { formatNumber } from "#lib/format-number";
 import { getUserlink } from "#lib/get-userlink";
 
 import {
@@ -52,7 +54,7 @@ export async function handleSellTomatoes(ctx: Context & { from: User }) {
   const { tomatoes, earnings } = sellTomatoes(userId);
 
   return await ctx.reply(
-    `${userlink}, вы успешно продали ${tomatoes}кг помидоров 🍅 на сумму ${earnings}₽`,
+    `${userlink}, вы успешно продали ${escapeMarkdown(formatNumber(tomatoes))}кг помидоров 🍅 на сумму ${escapeMarkdown(formatNumber(earnings))}₽`,
     { parse_mode: "MarkdownV2" },
   );
 }
