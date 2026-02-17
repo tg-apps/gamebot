@@ -25,21 +25,30 @@ bot.on("message", async (ctx, next) => {
 
 m.command("start", handleStart);
 
-m.hears(["помощь", "/help"], handleHelp);
+m.hears(["помощь"], handleHelp);
+m.command("help", handleHelp);
 
-m.hears(["б", "баланс", "/balance"], handleBalance);
+m.hears(["б", "баланс"], handleBalance);
+m.command("balance", handleBalance);
 
-m.hears(["профиль", "/profile"], handleProfile);
+m.hears(["профиль"], handleProfile);
+m.command("profile", handleProfile);
 
-m.hears(["бизнес", "/business"], (ctx) => handleBusiness(ctx));
+m.hears(["бизнес"], (ctx) => handleBusiness(ctx));
+m.command("business", (ctx) => handleBusiness(ctx));
+
 m.hears(["бизнес собрать"], (ctx) => handleBusiness(ctx, "collect"));
 m.hears(["бизнес улучшить"], (ctx) => handleBusiness(ctx, "upgrade"));
 
-m.hears(["ферма", "/farm"], (ctx) => handleTomatoFarm(ctx));
+m.hears(["ферма"], (ctx) => handleTomatoFarm(ctx));
+m.command("farm", (ctx) => handleTomatoFarm(ctx));
+
 m.hears(["ферма собрать"], (ctx) => handleTomatoFarm(ctx, "collect"));
 m.hears(["ферма улучшить"], (ctx) => handleTomatoFarm(ctx, "upgrade"));
 
-m.hears(["помидоры", "/tomatoes"], handleTomatoes);
+m.hears(["помидоры"], handleTomatoes);
+m.command("tomatoes", handleTomatoes);
+
 m.hears(["помидоры продать"], (ctx) => handleSellTomatoes(ctx));
 
 m.hears(["ник", "никнейм", "/nick", "/nickname"], (ctx) => handleNickname(ctx));
