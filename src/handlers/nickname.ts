@@ -1,17 +1,17 @@
 import type { Context } from "grammy";
-import type { User } from "grammy/types";
+import type { Message, User } from "grammy/types";
 
 import { getUserInfo, updateUserInfo } from "./database-manager";
 
 export async function handleNickname(
   ctx: Context & { from: User },
   newNickname?: string,
-) {
+): Promise<Message.TextMessage | undefined> {
   const userInfo = getUserInfo(ctx.from.id);
   if (!userInfo) return;
 
   if (!newNickname) {
-    return `🗂️ Ваш никнейм — «[${userInfo.nickname}]»`;
+    return await ctx.reply(`🗂️ Ваш никнейм — «${userInfo.nickname}»`);
   }
 
   if (newNickname.length > 20) {
@@ -23,4 +23,6 @@ export async function handleNickname(
   }
 
   updateUserInfo(ctx.from.id, { nickname: newNickname });
+
+  return await ctx.reply("Никнейм изменен");
 }

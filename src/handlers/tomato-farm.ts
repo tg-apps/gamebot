@@ -117,6 +117,8 @@ ${userlink}, информация о вашей ферме:
       farmInfo,
       userBalance.balance,
     );
-    return await ctx.reply(`${userlink}, ${message}`);
+    return await ctx.reply(`${userlink}, ${message}`, {
+      parse_mode: "MarkdownV2",
+    });
   }
 }

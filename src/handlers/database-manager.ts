@@ -103,14 +103,26 @@ export async function createNewUser(user: User) {
     return existingUser;
   }
 
-  await db.insert(schema.users).values({
-    userId: user.id,
-    firstName: user.first_name,
-    lastName: user.last_name,
-    username: user.username,
-  });
+  await db
+    .insert(schema.users)
+    .values({
+      userId: user.id,
+      firstName: user.first_name,
+      lastName: user.last_name,
+      username: user.username,
+    })
+    .onConflictDoNothing();
 
-  await db.insert(schema.balance).values({ userId: user.id });
-  await db.insert(schema.businesses).values({ userId: user.id });
-  await db.insert(schema.tomatoFarm).values({ userId: user.id });
+  await db
+    .insert(schema.balance)
+    .values({ userId: user.id })
+    .onConflictDoNothing();
+  await db
+    .insert(schema.businesses)
+    .values({ userId: user.id })
+    .onConflictDoNothing();
+  await db
+    .insert(schema.tomatoFarm)
+    .values({ userId: user.id })
+    .onConflictDoNothing();
 }

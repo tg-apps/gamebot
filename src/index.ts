@@ -27,7 +27,7 @@ m.command("start", handleStart);
 
 m.hears(["помощь", "/help"], handleHelp);
 
-m.hears(["б", "баланс"], handleBalance);
+m.hears(["б", "баланс", "/balance"], handleBalance);
 
 m.hears(["профиль", "/profile"], handleProfile);
 
@@ -46,6 +46,15 @@ m.hears(["ник", "никнейм", "/nick", "/nickname"], (ctx) => handleNickn
 m.hears(/^(?:ник|никнейм|\/nick|\/nickname)\s+(.+)$/i, (ctx) =>
   handleNickname(ctx, ctx.match[1]),
 );
+
+bot.api.setMyCommands([
+  { command: "help", description: "Помощь" },
+  { command: "profile", description: "Профиль" },
+  { command: "balance", description: "Баланс" },
+  { command: "business", description: "Бизнес" },
+  { command: "farm", description: "Ферма" },
+  { command: "tomatoes", description: "Помидоры" },
+]);
 
 const runner = run(bot);
 const stopRunner = () => runner.isRunning() && runner.stop();

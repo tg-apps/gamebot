@@ -1,6 +1,8 @@
 import type { Context } from "grammy";
 import type { User } from "grammy/types";
 
+import { escapeMarkdown } from "#lib/escape-markdown";
+import { formatNumber } from "#lib/format-number";
 import { getUserlink } from "#lib/get-userlink";
 
 import {
@@ -22,11 +24,13 @@ export async function handleProfile(ctx: Context & { from: User }) {
 
   const userlink = getUserlink(ctx.from.id, userInfo.nickname);
 
+  const money = escapeMarkdown(formatNumber(balance.balance));
+
   const message = `${userlink}, ваш профиль:
-💰 Денег: ${balance.balance}₽
+💰 Денег: ${money}₽
 🥫 Помидоры: ${balance.tomatoes}кг
 💼 Бизнес: ${business.level} рабочих
-🏭 Ферма: ${farm.level} грядок"
+🏭 Ферма: ${farm.level} грядок
 `;
 
   return ctx.reply(message, { parse_mode: "MarkdownV2" });

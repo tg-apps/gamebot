@@ -1,6 +1,9 @@
 import type { Context } from "grammy";
 import type { User } from "grammy/types";
 
+import { escapeMarkdown } from "#lib/escape-markdown";
+import { formatNumber } from "#lib/format-number";
+
 import { getUserBalance, getUserInfo } from "./database-manager";
 
 export async function handleBalance(ctx: Context & { from: User }) {
@@ -9,9 +12,11 @@ export async function handleBalance(ctx: Context & { from: User }) {
   const balance = getUserBalance(ctx.from.id);
   if (!balance) return;
 
+  const money = escapeMarkdown(formatNumber(balance.balance));
+
   const message = `
 👫 Ник: [${data.nickname}]
-💰 Деньги: ${balance.balance}₽
+💰 Деньги: ${money}₽
 🥫 Помидоров: ${balance.tomatoes}кг
 `;
 

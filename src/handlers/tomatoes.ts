@@ -20,6 +20,7 @@ export async function handleTomatoes(ctx: Context & { from: User }) {
 
   return await ctx.reply(
     `${userlink}, у вас ${userBalance.tomatoes}кг помидоров 🍅`,
+    { parse_mode: "MarkdownV2" },
   );
 }
 
@@ -52,5 +53,6 @@ export async function handleSellTomatoes(ctx: Context & { from: User }) {
 
   return await ctx.reply(
     `${userlink}, вы успешно продали ${tomatoes}кг помидоров 🍅 на сумму ${earnings}₽`,
+    { parse_mode: "MarkdownV2" },
   );
 }

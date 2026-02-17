@@ -2,6 +2,8 @@ import type { Context } from "grammy";
 import type { User } from "grammy/types";
 
 import { calculateTimePassed } from "#lib/calculate-time-passed";
+import { escapeMarkdown } from "#lib/escape-markdown";
+import { formatNumber } from "#lib/format-number";
 import { getUserlink } from "#lib/get-userlink";
 
 import {
@@ -88,14 +90,20 @@ export async function handleBusiness(
       return await ctx.reply("У вас нет бизнеса");
     }
 
-    const businessProfit = getBusinessProfit(userId, businessInfo);
+    const businessIncome = escapeMarkdown(
+      calculateBusinessIncome(businessInfo.level),
+    );
+
+    const businessProfit = escapeMarkdown(
+      formatNumber(getBusinessProfit(userId, businessInfo)),
+    );
 
     const message = `
 ${userlink}, информация о вашем бизнесе:
 
 👨 ‍Рабочих: ${businessInfo.level}/200
-💶 Доход: ${calculateBusinessIncome(businessInfo.level)}₽/сек\n"
-💰 Прибыль: ${businessProfit}₽"
+💶 Доход: ${businessIncome}₽/сек
+💰 Прибыль: ${businessProfit}₽
 `;
 
     return await ctx.reply(message, { parse_mode: "MarkdownV2" });
@@ -105,13 +113,14 @@ ${userlink}, информация о вашем бизнесе:
   if (!userBalance) return;
 
   if (action === "collect") {
-    const profit = collectBusinessProfit(
-      userId,
-      businessInfo,
-      userBalance.balance,
+    const profit = escapeMarkdown(
+      formatNumber(
+        collectBusinessProfit(userId, businessInfo, userBalance.balance),
+      ),
     );
     return await ctx.reply(
       `${userlink}, вы успешно собрали ${profit}₽ с баланса вашего бизнеса`,
+      { parse_mode: "MarkdownV2" },
     );
   }
 
@@ -121,6 +130,8 @@ ${userlink}, информация о вашем бизнесе:
       businessInfo,
       userBalance.balance,
     );
-    return await ctx.reply(`${userlink}, ${message}`);
+    return await ctx.reply(`${userlink}, ${message}`, {
+      parse_mode: "MarkdownV2",
+    });
   }
 }
