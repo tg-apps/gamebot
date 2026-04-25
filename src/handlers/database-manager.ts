@@ -15,7 +15,7 @@ export function getUserBalance(userId: number) {
 export function updateUserBalance(
   userId: number,
   userBalance: { balance?: number; tomatoes?: number },
-) {
+): schema.Balance {
   const data = db
     .update(schema.balance)
     .set(userBalance)
@@ -37,7 +37,7 @@ export function getBusinessInfo(userId: number) {
 export function updateBusinessInfo(
   userId: number,
   businessInfo: { lastCollect?: number; level?: number },
-) {
+): schema.Business {
   const data = db
     .update(schema.businesses)
     .set(businessInfo)
@@ -59,7 +59,7 @@ export function getTomatoFarmInfo(userId: number) {
 export function updateTomatoFarmInfo(
   userId: number,
   farmInfo: { lastCollect?: number; level?: number },
-) {
+): schema.TomatoFarm {
   const data = db
     .update(schema.tomatoFarm)
     .set(farmInfo)

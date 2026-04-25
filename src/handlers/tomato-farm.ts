@@ -47,7 +47,7 @@ function calculateUpgradeFarmLevelCost(farmLevel: number): number {
   return 1.2 ** farmLevel * 20_000_000;
 }
 
-async function upgradeFarmLevel(
+function upgradeFarmLevel(
   userId: number,
   farmInfo: { level: number; lastCollect: number },
   userBalance: number,
@@ -124,7 +124,7 @@ ${userlink}, информация о вашей ферме:
     }
 
     case "upgrade": {
-      const { message } = await upgradeFarmLevel(
+      const { message } = upgradeFarmLevel(
         userId,
         farmInfo,
         userBalance.balance,

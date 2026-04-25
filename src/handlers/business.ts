@@ -47,7 +47,7 @@ function calculateUpgradeBusinessLevelCost(businessLevel: number): number {
   return 1.1 ** businessLevel * 5_000_000;
 }
 
-async function upgradeBusinessLevel(
+function upgradeBusinessLevel(
   userId: number,
   businessInfo: { level: number; lastCollect: number },
   userBalance: number,
@@ -126,7 +126,7 @@ ${userlink}, информация о вашем бизнесе:
     }
 
     case "upgrade": {
-      const { message } = await upgradeBusinessLevel(
+      const { message } = upgradeBusinessLevel(
         userId,
         businessInfo,
         userBalance.balance,
