@@ -8,6 +8,8 @@ export const users = sqliteTable("users", {
   nickname: text("nickname").notNull().default("Игрок"),
 });
 
+export type User = typeof users.$inferSelect;
+
 export const balance = sqliteTable("balance", {
   userId: integer("user_id")
     .primaryKey()

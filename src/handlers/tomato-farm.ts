@@ -112,24 +112,26 @@ ${userlink}, информация о вашей ферме:
   const userBalance = getUserBalance(userId);
   if (!userBalance) return;
 
-  if (action === "collect") {
-    const profit = escapeMarkdown(
-      formatNumber(collectFarmProfit(userId, farmInfo, userBalance.tomatoes)),
-    );
-    return await ctx.reply(
-      `${userlink}, вы успешно собрали ${profit}кг помидоров с баланса вашей фермы`,
-      { parse_mode: "MarkdownV2" },
-    );
-  }
+  switch (action) {
+    case "collect": {
+      const profit = escapeMarkdown(
+        formatNumber(collectFarmProfit(userId, farmInfo, userBalance.tomatoes)),
+      );
+      return await ctx.reply(
+        `${userlink}, вы успешно собрали ${profit}кг помидоров с баланса вашей фермы`,
+        { parse_mode: "MarkdownV2" },
+      );
+    }
 
-  if (action === "upgrade") {
-    const { message } = await upgradeFarmLevel(
-      userId,
-      farmInfo,
-      userBalance.balance,
-    );
-    return await ctx.reply(`${userlink}, ${message}`, {
-      parse_mode: "MarkdownV2",
-    });
+    case "upgrade": {
+      const { message } = await upgradeFarmLevel(
+        userId,
+        farmInfo,
+        userBalance.balance,
+      );
+      return await ctx.reply(`${userlink}, ${message}`, {
+        parse_mode: "MarkdownV2",
+      });
+    }
   }
 }
