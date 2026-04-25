@@ -8,6 +8,8 @@ export const users = sqliteTable("users", {
   nickname: text("nickname").notNull().default("Игрок"),
 });
 
+export type User = typeof users.$inferSelect;
+
 export const balance = sqliteTable("balance", {
   userId: integer("user_id")
     .primaryKey()
@@ -15,6 +17,8 @@ export const balance = sqliteTable("balance", {
   balance: real("balance").notNull().default(10_000_000),
   tomatoes: real("tomatoes").notNull().default(0),
 });
+
+export type Balance = typeof balance.$inferSelect;
 
 export const businesses = sqliteTable("businesses", {
   userId: integer("user_id")
@@ -24,6 +28,8 @@ export const businesses = sqliteTable("businesses", {
   lastCollect: integer("last_collect").notNull().default(0),
 });
 
+export type Business = typeof businesses.$inferSelect;
+
 export const tomatoFarm = sqliteTable("tomato_farm", {
   userId: integer("user_id")
     .primaryKey()
@@ -31,3 +37,5 @@ export const tomatoFarm = sqliteTable("tomato_farm", {
   level: integer("level").notNull().default(0),
   lastCollect: integer("last_collect").notNull().default(0),
 });
+
+export type TomatoFarm = typeof tomatoFarm.$inferSelect;

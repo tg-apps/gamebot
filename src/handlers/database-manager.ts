@@ -15,7 +15,7 @@ export function getUserBalance(userId: number) {
 export function updateUserBalance(
   userId: number,
   userBalance: { balance?: number; tomatoes?: number },
-) {
+): schema.Balance {
   const data = db
     .update(schema.balance)
     .set(userBalance)
@@ -37,7 +37,7 @@ export function getBusinessInfo(userId: number) {
 export function updateBusinessInfo(
   userId: number,
   businessInfo: { lastCollect?: number; level?: number },
-) {
+): schema.Business {
   const data = db
     .update(schema.businesses)
     .set(businessInfo)
@@ -59,7 +59,7 @@ export function getTomatoFarmInfo(userId: number) {
 export function updateTomatoFarmInfo(
   userId: number,
   farmInfo: { lastCollect?: number; level?: number },
-) {
+): schema.TomatoFarm {
   const data = db
     .update(schema.tomatoFarm)
     .set(farmInfo)
@@ -86,7 +86,7 @@ export function updateUserInfo(
     username?: string;
     nickname?: string;
   },
-) {
+): schema.User {
   const data = db
     .update(schema.users)
     .set(userInfo)
@@ -96,33 +96,40 @@ export function updateUserInfo(
   return data;
 }
 
-export async function createNewUser(user: User) {
-  const existingUser = getUserInfo(user.id);
+export async function createNewOrUpdateUser(user: User): Promise<schema.User> {
+  return await db.transaction(async (tx) => {
+    const upsertedUser = tx
+      .insert(schema.users)
+      .values({
+        userId: user.id,
+        firstName: user.first_name,
+        lastName: user.last_name,
+        username: user.username,
+      })
+      .onConflictDoUpdate({
+        target: schema.users.userId,
+        set: {
+          firstName: user.first_name,
+          lastName: user.last_name,
+          username: user.username,
+        },
+      })
+      .returning()
+      .get();
 
-  if (existingUser) {
-    return existingUser;
-  }
+    await tx
+      .insert(schema.balance)
+      .values({ userId: user.id })
+      .onConflictDoNothing();
+    await tx
+      .insert(schema.businesses)
+      .values({ userId: user.id })
+      .onConflictDoNothing();
+    await tx
+      .insert(schema.tomatoFarm)
+      .values({ userId: user.id })
+      .onConflictDoNothing();
 
-  await db
-    .insert(schema.users)
-    .values({
-      userId: user.id,
-      firstName: user.first_name,
-      lastName: user.last_name,
-      username: user.username,
-    })
-    .onConflictDoNothing();
-
-  await db
-    .insert(schema.balance)
-    .values({ userId: user.id })
-    .onConflictDoNothing();
-  await db
-    .insert(schema.businesses)
-    .values({ userId: user.id })
-    .onConflictDoNothing();
-  await db
-    .insert(schema.tomatoFarm)
-    .values({ userId: user.id })
-    .onConflictDoNothing();
+    return upsertedUser;
+  });
 }

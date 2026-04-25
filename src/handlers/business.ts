@@ -47,7 +47,7 @@ function calculateUpgradeBusinessLevelCost(businessLevel: number): number {
   return 1.1 ** businessLevel * 5_000_000;
 }
 
-async function upgradeBusinessLevel(
+function upgradeBusinessLevel(
   userId: number,
   businessInfo: { level: number; lastCollect: number },
   userBalance: number,
@@ -112,26 +112,28 @@ ${userlink}, информация о вашем бизнесе:
   const userBalance = getUserBalance(userId);
   if (!userBalance) return;
 
-  if (action === "collect") {
-    const profit = escapeMarkdown(
-      formatNumber(
-        collectBusinessProfit(userId, businessInfo, userBalance.balance),
-      ),
-    );
-    return await ctx.reply(
-      `${userlink}, вы успешно собрали ${profit}₽ с баланса вашего бизнеса`,
-      { parse_mode: "MarkdownV2" },
-    );
-  }
+  switch (action) {
+    case "collect": {
+      const profit = escapeMarkdown(
+        formatNumber(
+          collectBusinessProfit(userId, businessInfo, userBalance.balance),
+        ),
+      );
+      return await ctx.reply(
+        `${userlink}, вы успешно собрали ${profit}₽ с баланса вашего бизнеса`,
+        { parse_mode: "MarkdownV2" },
+      );
+    }
 
-  if (action === "upgrade") {
-    const { message } = await upgradeBusinessLevel(
-      userId,
-      businessInfo,
-      userBalance.balance,
-    );
-    return await ctx.reply(`${userlink}, ${message}`, {
-      parse_mode: "MarkdownV2",
-    });
+    case "upgrade": {
+      const { message } = upgradeBusinessLevel(
+        userId,
+        businessInfo,
+        userBalance.balance,
+      );
+      return await ctx.reply(`${userlink}, ${message}`, {
+        parse_mode: "MarkdownV2",
+      });
+    }
   }
 }
